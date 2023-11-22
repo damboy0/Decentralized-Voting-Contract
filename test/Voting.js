@@ -30,4 +30,10 @@ describe("Voting", function () {
 
         expect(candidate[0].voteCount).to.equal(1)
     })
+
+    it("Should not be able to vote twice", async function () {
+        await voting.connect(addr1).vote(0)
+
+        expect(voting.connect(addr1).vote(1)).to.be.revertedWith("You Have already voted")
+    })
 })

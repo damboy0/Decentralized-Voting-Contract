@@ -23,6 +23,8 @@ The Decentralized Voting Project is a blockchain-based voting system implemented
 -   `getAllVotes`: Returns the list of all candidates and their vote counts.
 -   `getVotingStatus`: Checks if the voting is currently active.
 -   `getRemainingTime`: Provides the remaining time for the voting to end.
+-   `delegate`: Enables a voter to delegate their vote to another address.
+-   `delegateTo`: Returns the address to which a particular voter has delegated their vote.
 
 ## deploy.js
 
@@ -59,4 +61,14 @@ This Node.js script deploys the `Voting` contract to the Ethereum blockchain. It
 
 ---
 
+## Testing
+
+### Running Tests
+
+To run the automated test suite:
+
+```shell
+npx hardhat test
+
 Note: The README provides a basic overview of the project. For more detailed information about the code and its deployment, refer to the inline comments within the contract and the deployment script.
+```

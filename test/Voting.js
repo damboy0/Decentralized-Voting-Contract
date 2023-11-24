@@ -58,6 +58,14 @@ describe("Voting", function () {
         const candidate = await voting.getAllVotes()
         expect(candidate[0].voteCount).to.equal(1)
     })
+
+    it("should not allow delegator to vote after delegation", async function () {
+        await voting.connect(addr1).delegate(addr2.address)
+
+        expect(voting.connect(addr1).vote(0)).to.be.revertedWith(
+            "You have already voted or delegated",
+        )
+    })
 })
 
 //"should allow delegatee to vote after delegation"

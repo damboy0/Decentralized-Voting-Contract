@@ -9,6 +9,7 @@ contract Voting {
     Candidate[] public candidates;
     address owner;
     mapping(address => bool) public voters;
+    mapping(address => address) public delegateTo;
 
     uint256 public voteStart;
     uint256 public voteEnd;
@@ -32,12 +33,31 @@ contract Voting {
         candidates.push(Candidate({name: _name, voteCount: 0}));
     }
 
+    function delegate(address to) public {
+        require(!voters[msg.sender], "You have already voted or delegated to someone");
+        require(to != msg.sender, "Self Delegation is not allowed");
+
+        address current = to;
+
+        while (current != address(0)) {
+            require(current != msg.sender, "Found delegate loop "); // someone delegated to wants to delegate to another person
+            current = delegateTo[current];
+        }
+
+        delegateTo[msg.sender] = to;
+    }
+
     function vote(uint256 _candidateIndex) public {
         require(!voters[msg.sender], "You Have already voted");
         require(_candidateIndex < candidates.length, "Invalid Candidate Index");
+        address voter = msg.sender;
+        if (delegateTo[voter] != address(0)) {
+            voter = delegateTo[voter];
+            require(!voters[voter], "The Delgated Voter has already voted ");
+        }
 
         candidates[_candidateIndex].voteCount++;
-        voters[msg.sender] = true;
+        voters[voter] = true;
     }
 
     function getAllVotes() public view returns (Candidate[] memory) {

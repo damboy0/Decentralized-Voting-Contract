@@ -42,4 +42,23 @@ describe("Voting", function () {
 
         expect(voting.connect(addr1).vote(0)).to.be.revertedWith("Voting Has Ended Already")
     })
+
+    it("should allow voter to delegate their vote", async function () {
+        await voting.connect(addr1).delegate(addr2.address)
+
+        const delegateAddress = await voting.delegateTo(addr1.address)
+        expect(delegateAddress).to.equal(addr2.address)
+    })
+
+    it("should allow delegatee to vote after delegation", async function () {
+        await voting.connect(addr1).delegate(addr2.address)
+
+        await voting.connect(addr2).vote(0)
+
+        const candidate = await voting.getAllVotes()
+        expect(candidate[0].voteCount).to.equal(1)
+    })
 })
+
+//"should allow delegatee to vote after delegation"
+//"should not allow delegator to vote after delegation"

@@ -1,5 +1,5 @@
 const { expect } = require("chai")
-const { ethers } = require("hardhat")
+const { ethers, network } = require("hardhat")
 
 describe("Voting", function () {
     let Voting
@@ -35,5 +35,11 @@ describe("Voting", function () {
         await voting.connect(addr1).vote(0)
 
         expect(voting.connect(addr1).vote(1)).to.be.revertedWith("You Have already voted")
+    })
+
+    it("Should not allow voting after voting period ends", async function () {
+        await network.provider.send("evm_increaseTime", [600])
+
+        expect(voting.connect(addr1).vote(0)).to.be.revertedWith("Voting Has Ended Already")
     })
 })
